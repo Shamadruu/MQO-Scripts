@@ -1,5 +1,6 @@
 /*
-  Paste this into your console to use.
+  Paste this into your console to use. Buttons to control it appear below your minimap.
+  
   Press the "log view" button below the minimap to add your current view to the stored map
 	The script requires that the values (such as tier chances) be visible to you. For example, you'd have to swap to the Resources 2 view for the script to be able to log T2 resources. However, it does it for all visible tiles.
 	
