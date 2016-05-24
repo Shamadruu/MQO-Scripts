@@ -23,8 +23,10 @@
 	if(localStorage.getItem("data")){
 		map = load();
 	}
-	
-	document.getElementById("MapZone").innerHTML += '<div style="float:right;"><button id="logger">Log View</button><button id="display">Display Map</button></div>';
+	if(document.getElementById("mapper")){
+		document.getElementById("mapper").remove();
+	}
+	document.getElementById("MapZone").innerHTML += '<div style="float:right;" id="mapper"><button id="logger">Log View</button><button id="display">Display Map</button></div>';
 	
 	document.getElementById("logger").addEventListener("click", function(){
 		log();
@@ -68,11 +70,10 @@
 			var coords = $(this).attr("id").replace(/x(?=\d+)|y(?=\d+)/g, " ").trim().split(" ");
 			tile.x = Number(coords[0]);
 			tile.y = Number(coords[1]);
-			tile.centerX = tile.x;
+			tile.centerX = tile.x+tile.y/2;
 			tile.centerY = tile.y;
-
 			
-			if(tile.y%2 === 1) tile.centerX -= 1/2;
+			
 			
 			tile.type = $(this).attr("class").replace(/tile-(?=\w+)| Kg[0-9]/g,"");
 			tile.kingdom = $(this).attr("class").match(/Kg[0-9]/)||'';
@@ -151,14 +152,17 @@
 				if(e.toElement != newMap && e.target.attributes.name !== undefined){
 					tileData(e.target.attributes.name.value);
 				}
+				//Just in case
 				e.stopImmediatePropagation();
 			}
 			function handleX(e){
 				var v = Number(e.target.value);
 				if(v && v >= 0 && v <= 1000){
-					var x =  -Number(e.target.value)*size*2;
+					;
+					var x =  -(Number(e.target.value)+Number(newWindow.document.getElementById("tileY").value)/2)*size*2;
 					newMap.currentTranslate.x = (scale*x)+newMap.width.animVal.value/2;
 				}
+				e.stopImmediatePropagation();
 			}
 			function handleY(e){
 				var v = Number(e.target.value);
@@ -166,6 +170,7 @@
 					var y =  -Number(v)*3*size/2;
 					newMap.currentTranslate.y = (scale*y)+newMap.height.animVal.value/2;
 				}
+				e.stopImmediatePropagation();
 			}
 			
 			function handleZoom(e){
@@ -176,6 +181,7 @@
 					newMap.getElementsByTagName('g')[0].style.transform = 'scale(' + v + ')';
 					scale = v;
 				}
+				e.stopImmediatePropagation();
 			}
 			
 			function tileData(t){
