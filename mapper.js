@@ -12,6 +12,11 @@
   You will need to have popups enabled for MQO for this to work.
  
   This is still a work in progress.
+  
+  **********
+  CHANGELOG
+  **********
+  5/24/2016: First version; fixed coordinate system (Who uses an axial system, anyway?).
 */
 
 (function(){
