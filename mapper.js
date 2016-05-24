@@ -126,7 +126,7 @@
 		var size = 10;
 		var scale = 1;
 		var head = newWindow.document.getElementsByTagName("head")[0];
-			head.innerHTML = "<style>body { background: #666666; margin:0;} #newMap { width: 100%; height: 90%; vertical-align:bottom; background-color: #666666;} #navbar { width: 100%; height: 10%; background-color: white;vertical-align: top;} polygon {stroke: hsl(0, 0%, 70%); stroke-width: 0.01%;} g > text {text-anchor:middle;font-size: 5.5px; font-stretch: extra-condensed;} .plain polygon{fill: hsl(72, 87%, 71%);} .city polygon{fill: hsl(43, 26%, 46%);} .lake polygon{fill:hsl(231, 91%, 62%);} .forest polygon{fill:hsl(108, 26%, 32%);} .swamp polygon{fill:hsl(72, 8%, 31%);} .rock polygon{fill: hsl(172, 4%, 46%);} .Kg1 polygon, .Kg2 polygon {stroke: hsl(240, 0%, 100%) !important; stroke-width: 0.05% !important;}}";
+			head.innerHTML = "<style>body { background: #666666; margin:0;} #newMap { width: 100%; height: 90%; vertical-align:bottom; background-color: #666666;} #navbar { width: 100%; height: 10%; background-color: white;vertical-align: top; position:relative;} polygon {stroke: hsl(0, 0%, 70%); stroke-width: 0.01%;} g > text {text-anchor:middle;font-size: 5.5px; font-stretch: extra-condensed;} .plain polygon{fill: hsl(72, 87%, 71%);} .city polygon{fill: hsl(43, 26%, 46%);} .lake polygon{fill:hsl(231, 91%, 62%);} .forest polygon{fill:hsl(108, 26%, 32%);} .swamp polygon{fill:hsl(72, 8%, 31%);} .rock polygon{fill: hsl(172, 4%, 46%);} .Kg1 polygon, .Kg2 polygon {stroke: hsl(240, 0%, 100%) !important; stroke-width: 0.05% !important;}}";
 			
 			//If the navbar does not exist, assume that this is an entirely new window.
 			if(!newWindow.document.getElementById("navbar")){
