@@ -22,6 +22,11 @@
 	}
 	if(localStorage.getItem("data")){
 		map = load();
+		for(var t in map){ 
+			var tile = map[t]; 
+			tile.centerX = tile.x+tile.y/2;
+			tile.centerY = tile.y;
+		}
 	}
 	if(document.getElementById("mapper")){
 		document.getElementById("mapper").remove();
