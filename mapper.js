@@ -137,7 +137,7 @@
 			//If the navbar does not exist, assume that this is an entirely new window.
 			if(!newWindow.document.getElementById("navbar")){
 				newWindow.document.getElementsByTagName("body")[0].innerHTML = '<div id="navbar"></div><div><svg id="newMap"><g></g></svg></div>';
-				newWindow.document.getElementById("navbar").innerHTML = '<table style="height: 100%;display: inline-block;position: absolute;left: 2.5%;width: 37.5%;"> <thead> <tr> <th colspan="2">Target Tile</th> <th colspan="2">Scale</th> </tr> </thead> <tbody> <tr> <th>X-Coord: </th> <td><input id="tileX" type="number" value="0"></td> <th>Scale: </th> <td><input id="scale" type="number" value="1"></td> </tr> <tr> <th>Y-Coord: </th> <td><input id="tileY" type="number" value="0"></td> <td>&nbsp;</td> <td>&nbsp;</td> </tr> </tbody> </table><table style="height: 100%;display: inline-block;position: absolute;left: 40%;width: 20%;"> <thead> <tr> <th colspan="5">Filter (Thresholds)</th> </tr> </thead> <tbody> <tr> <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th> </tr> <tr> <td><input id="t1" type="number" min="40" max="90" style="width:75%;" value="40"></td><td><input id="t2" type="number" min="20" max="60" style="width:75%;" value="20"></td><td><input id="t3" type="number" min="10" max="30" style="width:75%;" value="10"></td><td><input id="t4" type="number" min="5" max="15" style="width:75%;" value="5"></td><td><input id="t5" type="number" min="0" max="5" style="width:75%;" value="0"></td> </tr> </tbody></table> <table id="data" style="height: 100%;top: 0px;display: inline-block;position: absolute;right: 2.5%;width: 37.5%;"><thead> <tr> <th colspan="6">Tile Data</th> </tr> </thead> <tbody> <tr> <th>Coords: </th> <td>(388,408)</td> <th>Type: </th> <td>lake</td> <th>Kingdom: </th> <td></td> </tr> <tr> <th>Tier %:</th> <th>T1: 71%</th> <th>T2: 39%</th> <th>T3: ??%</th> <th>T4: ??%</th> <th>T5: ??%</th> </tr> <tr> <th>Monsters:</th> <th>250</th> <th>???</th> <th>???</th> <th>???</th> <th>???</th> </tr> </tbody></table>';
+				newWindow.document.getElementById("navbar").innerHTML = '<table style="height: 100%;display: inline-block;position: absolute;left: 2.5%;width: 37.5%;"> <thead> <tr> <th colspan="2">Target Tile</th> <th colspan="2">Scale</th> </tr> </thead> <tbody> <tr> <th>X-Coord: </th> <td><input id="tileX" type="number" value="0"></td> <th>Scale: </th> <td><input id="scale" type="number" value="1"></td> </tr> <tr> <th>Y-Coord: </th> <td><input id="tileY" type="number" value="0"></td> <td>&nbsp;</td> <td>&nbsp;</td> </tr> </tbody> </table><table style="height: 100%;display: inline-block;position: absolute;left: 40%;width: 20%;"> <thead> <tr> <th colspan="5">Filter (Thresholds)</th> </tr> </thead> <tbody> <tr> <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th> </tr> <tr> <td><input id="t1" type="number" min="40" max="90" style="width:75%;" value="40"></td><td><input id="t2" type="number" min="20" max="60" style="width:75%;" value="20"></td><td><input id="t3" type="number" min="10" max="30" style="width:75%;" value="10"></td><td><input id="t4" type="number" min="5" max="15" style="width:75%;" value="5"></td><td><input id="t5" type="number" min="0" max="5" style="width:75%;" value="0"></td> </tr><tr> <th colspan="2">Type: </th> <td colspan="3"><select id="type"><option value="rock">rock</option><option value="plain">plain</option><option value="lake">lake</option><option value="forest">forest</option><option value="city">city</option><option value="swamp">swamp</option><option value="none">none</option></select></td></tr> </tbody></table><table id="data" style="height: 100%;top: 0px;display: inline-block;position: absolute;right: 2.5%;width: 37.5%;"><thead> <tr> <th colspan="6">Tile Data</th> </tr> </thead> <tbody> <tr> <th>Coords: </th> <td>(388,408)</td> <th>Type: </th> <td>lake</td> <th>Kingdom: </th> <td></td> </tr> <tr> <th>Tier %:</th> <th>T1: 71%</th> <th>T2: 39%</th> <th>T3: ??%</th> <th>T4: ??%</th> <th>T5: ??%</th> </tr> <tr> <th>Monsters:</th> <th>250</th> <th>???</th> <th>???</th> <th>???</th> <th>???</th> </tr> </tbody></table>';
 			}
 			var newMap = newWindow.document.getElementById("newMap");
 			constructSVG(newMap, size);
@@ -151,6 +151,7 @@
 			newWindow.document.getElementById("t3").removeEventListener("change", handleFilter);
 			newWindow.document.getElementById("t4").removeEventListener("change", handleFilter);
 			newWindow.document.getElementById("t5").removeEventListener("change", handleFilter);
+			newWindow.document.getElementById("type").addEventListener("change", handleFilter);
 			
 			newMap.addEventListener("click", handleClick);
 			newWindow.document.getElementById("tileX").addEventListener("change", handleX);
@@ -161,6 +162,7 @@
 			newWindow.document.getElementById("t3").addEventListener("change", handleFilter);
 			newWindow.document.getElementById("t4").addEventListener("change", handleFilter);
 			newWindow.document.getElementById("t5").addEventListener("change", handleFilter);
+			newWindow.document.getElementById("type").addEventListener("change", handleFilter);
 			
 			function handleClick(e){
 				if(e.toElement != newMap && e.target.attributes.name !== undefined){
@@ -209,24 +211,25 @@
 				var t3 = ~~newWindow.document.getElementById("t3").value;
 				var t4 = ~~newWindow.document.getElementById("t4").value;
 				var t5 = ~~newWindow.document.getElementById("t5").value;
+				var type = newWindow.document.getElementById("type").value;
 				t1 = (t1 >= 40 && t1 <= 90) ? t1 : 40;
 				t2 = (t2 >= 20 && t2 <= 60) ? t2 : 20;
 				t3 = (t3 >= 10 && t3 <= 30) ? t3 : 10;
 				t4 = (t4 >= 5 && t4 <= 15) ? t4 : 5;
 				t5 = (t5 >= 0 && t5 <= 5) ? t5 : 0;
-				filter(t1,t2,t3,t4,t5);
+				filter(t1,t2,t3,t4,t5,type);
 				e.stopImmediatePropagation();
 			}
 			
-			function filter(t1,t2,t3,t4,t5){
+			function filter(t1,t2,t3,t4,t5,type){
 				for(var t in map){
 					//If only let weren't strict mode specific...
 					/*console.log(t1 + ' ' + t2 + ' ' + t3 + ' ' + t4 + ' ' + t5);
 					console.log(tile);*/
 					var tile = map[t];
 					var element = newWindow.document.getElementById(t).getElementsByTagName("text")[0];
-					if((~~tile.t1 >= t1 || !tile.t1) && (~~tile.t2 >= t2 || !tile.t2) && (~~tile.t3 >= t3 || !tile.t3) && (~~tile.t4 >= t4 || !tile.t4) && (~~tile.t5 >= t5 || !tile.t5) && !(!tile.t1 && !tile.t2 && !tile.t3 && !tile.t4 && !tile.t5)){
-						element.style.fill = "hsl(0, 100%, 100%)";
+					if((~~tile.t1 >= t1 || !tile.t1) && (~~tile.t2 >= t2 || !tile.t2) && (~~tile.t3 >= t3 || !tile.t3) && (~~tile.t4 >= t4 || !tile.t4) && (~~tile.t5 >= t5 || !tile.t5) && !(!tile.t1 && !tile.t2 && !tile.t3 && !tile.t4 && !tile.t5) && (type == tile.type || type == "none")){
+						element.style.fill = "hsl(0, 100%, 50%)";
 						
 						
 					}
