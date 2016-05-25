@@ -226,7 +226,7 @@
 					var tile = map[t];
 					var element = newWindow.document.getElementById(t).getElementsByTagName("text")[0];
 					if((~~tile.t1 >= t1 || !tile.t1) && (~~tile.t2 >= t2 || !tile.t2) && (~~tile.t3 >= t3 || !tile.t3) && (~~tile.t4 >= t4 || !tile.t4) && (~~tile.t5 >= t5 || !tile.t5) && !(!tile.t1 && !tile.t2 && !tile.t3 && !tile.t4 && !tile.t5)){
-						element.style.fill = "hsl(300, 100%, 27%)";
+						element.style.fill = "hsl(0, 100%, 100%)";
 						
 						
 					}
