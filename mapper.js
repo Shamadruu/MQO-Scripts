@@ -21,6 +21,7 @@
 
 (function(){
 	var newWindow, map;
+	var file = null;
 
 	if(!map){
 		map = {};
@@ -31,6 +32,7 @@
 	if(document.getElementById("mapper")){
 		document.getElementById("mapper").remove();
 	}
+	
 	document.getElementById("MapZone").innerHTML += '<div style="float:right;" id="mapper"><button id="logger">Log View</button><button id="display">Display Map</button></div>';
 	
 	document.getElementById("logger").addEventListener("click", function(){
@@ -50,6 +52,15 @@
 			}
 		}
 		return a;
+	}
+	
+	function createFile(){
+		var data = new Blob([localStorage.getItem("data")], {type: 'text/plain'});
+		if(file !== null){
+			window.URL.revokeObjectURL(file);
+		}
+		file = window.URL.createObjectURL(data);
+		return file;
 	}
 	
 	function load() {
@@ -137,7 +148,7 @@
 			//If the navbar does not exist, assume that this is an entirely new window.
 			if(!newWindow.document.getElementById("navbar")){
 				newWindow.document.getElementsByTagName("body")[0].innerHTML = '<div id="navbar"></div><div><svg id="newMap"><g></g></svg></div>';
-				newWindow.document.getElementById("navbar").innerHTML = '<table style="height: 100%;display: inline-block;position: absolute;left: 2.5%;width: 37.5%;"> <thead> <tr> <th colspan="2">Target Tile</th> <th colspan="2">Scale</th> </tr> </thead> <tbody> <tr> <th>X-Coord: </th> <td><input id="tileX" type="number" value="0"></td> <th>Scale: </th> <td><input id="scale" type="number" value="1"></td> </tr> <tr> <th>Y-Coord: </th> <td><input id="tileY" type="number" value="0"></td> <td>&nbsp;</td> <td>&nbsp;</td> </tr> </tbody> </table><table style="height: 100%;display: inline-block;position: absolute;left: 40%;width: 20%;"> <thead> <tr> <th colspan="5">Filter (Thresholds)</th> </tr> </thead> <tbody> <tr> <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th> </tr> <tr> <td><input id="t1" type="number" min="40" max="90" style="width:75%;" value="40"></td><td><input id="t2" type="number" min="20" max="60" style="width:75%;" value="20"></td><td><input id="t3" type="number" min="10" max="30" style="width:75%;" value="10"></td><td><input id="t4" type="number" min="5" max="15" style="width:75%;" value="5"></td><td><input id="t5" type="number" min="0" max="5" style="width:75%;" value="0"></td> </tr><tr> <th colspan="2">Type: </th> <td colspan="2"><select id="type"><option value="rock">rock</option><option value="plain">plain</option><option value="lake">lake</option><option value="forest">forest</option><option value="city">city</option><option value="swamp">swamp</option><option value="none">none</option></select></td><td id="matches"></td></tr> </tbody></table><table id="data" style="height: 100%;top: 0px;display: inline-block;position: absolute;right: 2.5%;width: 37.5%;"><thead> <tr> <th colspan="6">Tile Data</th> </tr> </thead> <tbody> <tr> <th>Coords: </th> <td>(388,408)</td> <th>Type: </th> <td>lake</td> <th>Kingdom: </th> <td></td> </tr> <tr> <th>Tier %:</th> <th>T1: 71%</th> <th>T2: 39%</th> <th>T3: ??%</th> <th>T4: ??%</th> <th>T5: ??%</th> </tr> <tr> <th>Monsters:</th> <th>250</th> <th>???</th> <th>???</th> <th>???</th> <th>???</th> </tr> </tbody></table>';
+				newWindow.document.getElementById("navbar").innerHTML = '<table style="height: 100%;display: inline-block;position: absolute;left: 2.5%;width: 37.5%;"> <thead> <tr> <th colspan="2">Target Tile</th> <th colspan="2">Scale</th> </tr> </thead> <tbody> <tr> <th>X-Coord: </th> <td><input id="tileX" type="number" value="0"></td> <th>Scale: </th> <td><input id="scale" type="number" value="1"></td> </tr> <tr> <th>Y-Coord: </th> <td><input id="tileY" type="number" value="0"></td><td>Saved Data</td> <td><button id="toggleData">Import/Export</button></td> </tr> </tbody> </table><table style="height: 100%;display: inline-block;position: absolute;left: 40%;width: 20%;"> <thead> <tr> <th colspan="5">Filter (Thresholds)</th> </tr> </thead> <tbody> <tr> <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th> </tr> <tr> <td><input id="t1" type="number" min="40" max="90" style="width:75%;" value="40"></td><td><input id="t2" type="number" min="20" max="60" style="width:75%;" value="20"></td><td><input id="t3" type="number" min="10" max="30" style="width:75%;" value="10"></td><td><input id="t4" type="number" min="5" max="15" style="width:75%;" value="5"></td><td><input id="t5" type="number" min="0" max="5" style="width:75%;" value="0"></td> </tr><tr> <th colspan="2">Type: </th> <td colspan="2"><select id="type"><option value="rock">rock</option><option value="plain">plain</option><option value="lake">lake</option><option value="forest">forest</option><option value="city">city</option><option value="swamp">swamp</option><option value="none">none</option></select></td><td id="matches"></td></tr> </tbody></table><table id="data" style="height: 100%;top: 0px;display: inline-block;position: absolute;right: 2.5%;width: 37.5%;"><thead> <tr> <th colspan="6">Tile Data</th> </tr> </thead> <tbody> <tr> <th>Coords: </th> <td>(388,408)</td> <th>Type: </th> <td>lake</td> <th>Kingdom: </th> <td></td> </tr> <tr> <th>Tier %:</th> <th>T1: 71%</th> <th>T2: 39%</th> <th>T3: ??%</th> <th>T4: ??%</th> <th>T5: ??%</th> </tr> <tr> <th>Monsters:</th> <th>250</th> <th>???</th> <th>???</th> <th>???</th> <th>???</th> </tr> </tbody></table>';
 			}
 			var newMap = newWindow.document.getElementById("newMap");
 			constructSVG(newMap, size);
@@ -151,7 +162,7 @@
 			newWindow.document.getElementById("t3").removeEventListener("change", handleFilter);
 			newWindow.document.getElementById("t4").removeEventListener("change", handleFilter);
 			newWindow.document.getElementById("t5").removeEventListener("change", handleFilter);
-			newWindow.document.getElementById("type").addEventListener("change", handleFilter);
+			newWindow.document.getElementById("type").removeEventListener("change", handleFilter);
 			
 			newMap.addEventListener("click", handleClick);
 			newWindow.document.getElementById("tileX").addEventListener("change", handleX);
@@ -162,6 +173,7 @@
 			newWindow.document.getElementById("t3").addEventListener("change", handleFilter);
 			newWindow.document.getElementById("t4").addEventListener("change", handleFilter);
 			newWindow.document.getElementById("t5").addEventListener("change", handleFilter);
+			newWindow.document.getElementById("type").addEventListener("change", handleFilter);
 			newWindow.document.getElementById("type").addEventListener("change", handleFilter);
 			
 			function handleClick(e){
@@ -190,8 +202,8 @@
 			}
 			
 			function handleZoom(e){
-				var v = ~~e.target.value;
-				if(v && v > 0 && v <= 20){
+				var v = Number(e.target.value);
+				if(v && v >= 0.1 && v <= 20){
 					newMap.currentTranslate.x = ((newMap.currentTranslate.x-newMap.width.animVal.value/2 )*v/scale)+newMap.width.animVal.value/2;
 					newMap.currentTranslate.y = ((newMap.currentTranslate.y-newMap.height.animVal.value/2 )*v/scale)+newMap.height.animVal.value/2;;
 					newMap.getElementsByTagName('g')[0].style.transform = 'scale(' + v + ')';
@@ -240,6 +252,10 @@
 				newWindow.document.getElementById("matches").innerHTML = matches.length;
 				console.log(matches);
 				
+			}
+			
+			function getMapData(){
+				var f = createFile();
 			}
 	}
 	function display() {
