@@ -33,7 +33,7 @@
 		document.getElementById("mapper").remove();
 	}
 	
-	document.getElementById("MapZone").innerHTML += '<div style="float:right;" id="mapper"><button id="logger">Log View</button><button id="display">Display Map</button></div>';
+	document.getElementById("MapZone").innerHTML += '<div style="float:right;" id="mapper"><button style="font-size: 0.85em;" id="logger">Log View</button><button  style="font-size: 0.85em;" id="display">Display Map</button></div>';
 	
 	document.getElementById("logger").addEventListener("click", function(){
 		log();
@@ -127,6 +127,7 @@
 		save();
 	}
 	function constructSVG(svg,s){
+		svg.innerHTML = '<g></g>';
 		var m = load();
 		var group = svg.getElementsByTagName('g')[0];
 		var g = ''; 
@@ -152,7 +153,7 @@
 			
 			//If the navbar does not exist, assume that this is an entirely new window.
 			if(!newWindow.document.getElementById("navbar")){
-				newWindow.document.getElementsByTagName("body")[0].innerHTML = '<div id="navbar"></div><div id="saveData" style="display:none;"></div><div style="position: relative; z-index:-1;"><svg id="newMap"><g></g></svg></div>';
+				newWindow.document.getElementsByTagName("body")[0].innerHTML = '<div id="navbar"></div><div id="saveData" style="display:none;"></div><div style="position: relative; z-index:-1;"><svg id="newMap"></svg></div>';
 				newWindow.document.getElementById("navbar").innerHTML = '<table style="height: 100%;display: inline-block;position: absolute;left: 2.5%;width: 40%;"> <thead> <tr> <th colspan="2">Target Tile</th> <th colspan="2">Scale</th> </tr> </thead> <tbody> <tr> <th>X-Coord: </th> <td><input id="tileX" type="number" value="0"></td> <th>Scale: </th> <td><input id="scale" type="number" value="1"></td> </tr> <tr> <th>Y-Coord: </th> <td><input id="tileY" type="number" value="0"></td><td>Saved Data</td> <td><button id="toggleData">Import/Export</button></td> </tr> </tbody> </table><table style="height: 100%;display: inline-block;position: absolute;left: 42.5%;width: 20%;"> <thead> <tr> <th colspan="5">Filter (Thresholds)</th> </tr> </thead> <tbody> <tr> <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th> </tr> <tr> <td><input id="t1" type="number" min="40" max="90" style="width:75%;" value="40"></td><td><input id="t2" type="number" min="20" max="60" style="width:75%;" value="20"></td><td><input id="t3" type="number" min="10" max="30" style="width:75%;" value="10"></td><td><input id="t4" type="number" min="5" max="15" style="width:75%;" value="5"></td><td><input id="t5" type="number" min="0" max="5" style="width:75%;" value="0"></td> </tr><tr> <th colspan="2">Type: </th> <td colspan="2"><select id="type"><option value="rock">rock</option><option value="plain">plain</option><option value="lake">lake</option><option value="forest">forest</option><option value="city">city</option><option value="swamp">swamp</option><option value="none">none</option></select></td><td id="matches"></td></tr> </tbody></table><table id="data" style="height: 100%;top: 0px;display: inline-block;position: absolute;right: 2.5%;width: 32.5%;"><thead> <tr> <th colspan="6">Tile Data</th> </tr> </thead> <tbody> <tr> <th>Coords: </th> <td>(388,408)</td> <th>Type: </th> <td>lake</td> <th>Kingdom: </th> <td></td> </tr> <tr> <th>Tier %:</th> <th>T1: 71%</th> <th>T2: 39%</th> <th>T3: ??%</th> <th>T4: ??%</th> <th>T5: ??%</th> </tr> <tr> <th>Monsters:</th> <th>250</th> <th>???</th> <th>???</th> <th>???</th> <th>???</th> </tr> </tbody></table>';
 				newWindow.document.getElementById("saveData").innerHTML = '<div id="export" style=" width: 50%; height: 100%; position: absolute; border-right: 2px solid rgb(180,180,180);"><div style=" text-align: center; font-size: 1.25em; font-weight: 600; width: 100%; height: 20%; background-color: rgb(200,200,200);">Export</div><div style="height: 80%;"><button id="export-button" style="position: relative;top: 50%;left: 50%;transform: translate(-50%,-50%);">Download Map Data</button></div></div><div id="import" style=" width: 50%; height: 100%; position: absolute; right: 0%;"><div style="text-align: center;font-size: 1.25em;font-weight: 600;width: 100%;height: 20%;background-color: rgb(200,200,200);">Import</div><div style=" height: 80%;"> <div style=" width: 50%; position: relative; top: 50%; left: 50%; transform: translate(-50%,-50%);"><input type="file" id="file" style=""><button id="import-button" style="">Import</button></div></div></div><span id="save-close" style="position: absolute;right: 1.25%;cursor: pointer;" >X</span>';
 			}
