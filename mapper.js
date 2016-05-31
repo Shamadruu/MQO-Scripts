@@ -203,7 +203,7 @@
 			
 			function handleZoom(e){
 				var v = Number(e.target.value);
-				if(v && v >= 0.1 && v <= 20){
+				if(v && v >= 0.1 && v <= 32){
 					newMap.currentTranslate.x = ((newMap.currentTranslate.x-newMap.width.animVal.value/2 )*v/scale)+newMap.width.animVal.value/2;
 					newMap.currentTranslate.y = ((newMap.currentTranslate.y-newMap.height.animVal.value/2 )*v/scale)+newMap.height.animVal.value/2;;
 					newMap.getElementsByTagName('g')[0].style.transform = 'scale(' + v + ')';
