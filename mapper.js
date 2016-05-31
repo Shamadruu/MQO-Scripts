@@ -23,7 +23,7 @@
 	var newWindow, map;
 	var file = null;
 
-	if(!map){
+	if(!map){ 
 		map = {};
 	}
 	if(localStorage.getItem("data")){
