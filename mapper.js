@@ -23,7 +23,7 @@
 	var newWindow, map;
 	var file = null;
 
-	if(!map){ 
+	if(!map){
 		map = {};
 	}
 	if(localStorage.getItem("data")){
@@ -64,7 +64,12 @@
 	}
 	
 	function load() {
-		return JSON.parse(atob(localStorage.getItem("data")));
+		if(localStorage.getItem("data") == ""){
+			return "";
+		}
+		else{
+			return JSON.parse(atob(localStorage.getItem("data")));
+		}
 	}
 	
 	function save(){
@@ -143,12 +148,13 @@
 		var size = 10;
 		var scale = 1;
 		var head = newWindow.document.getElementsByTagName("head")[0];
-			head.innerHTML = "<style>body { background: #666666; margin:0;} #newMap { width: 100%; height: 90%; vertical-align:bottom; background-color: #666666;} #navbar { width: 100%; height: 10%; background-color: white;vertical-align: top; position:relative;} polygon {stroke: hsl(0, 0%, 70%); stroke-width: 0.01%;} g > text {text-anchor:middle;font-size: 5.5px; font-stretch: extra-condensed;} g > text > tspan:nth-of-type(2){ font-size: 0.65em;} .plain polygon{fill: hsl(72, 87%, 71%);} .city polygon{fill: hsl(43, 26%, 46%);} .lake polygon{fill:hsl(231, 91%, 62%);} .forest polygon{fill:hsl(108, 26%, 32%);} .swamp polygon{fill:hsl(72, 8%, 31%);} .rock polygon{fill: hsl(172, 4%, 46%);} .Kg1 polygon, .Kg2 polygon {stroke: hsl(348, 83%, 47%) !important; stroke-width: 0.05% !important;}}";
+			head.innerHTML = "<style>body { background: #666666; margin:0;} #newMap { width: 100%; height: 90%; vertical-align:bottom; background-color: #666666;} #navbar { width: 100%; height: 10%; background-color: white;vertical-align: top; position:relative;} #saveData {position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 75%; height: 12.5%; z-index: 10; background-color: rgb(230,230,230);} polygon {stroke: hsl(0, 0%, 70%); stroke-width: 0.01%;} g > text {text-anchor:middle;font-size: 5.5px; font-stretch: extra-condensed;} g > text > tspan:nth-of-type(2){ font-size: 0.65em;} .plain polygon{fill: hsl(72, 87%, 71%);} .city polygon{fill: hsl(43, 26%, 46%);} .lake polygon{fill:hsl(231, 91%, 62%);} .forest polygon{fill:hsl(108, 26%, 32%);} .swamp polygon{fill:hsl(72, 8%, 31%);} .rock polygon{fill: hsl(172, 4%, 46%);} .Kg1 polygon, .Kg2 polygon {stroke: hsl(348, 83%, 47%) !important; stroke-width: 0.05% !important;}}";
 			
 			//If the navbar does not exist, assume that this is an entirely new window.
 			if(!newWindow.document.getElementById("navbar")){
-				newWindow.document.getElementsByTagName("body")[0].innerHTML = '<div id="navbar"></div><div><svg id="newMap"><g></g></svg></div>';
+				newWindow.document.getElementsByTagName("body")[0].innerHTML = '<div id="navbar"></div><div id="saveData" style="display:none;"></div><div style="position: relative; z-index:-1;"><svg id="newMap"><g></g></svg></div>';
 				newWindow.document.getElementById("navbar").innerHTML = '<table style="height: 100%;display: inline-block;position: absolute;left: 2.5%;width: 40%;"> <thead> <tr> <th colspan="2">Target Tile</th> <th colspan="2">Scale</th> </tr> </thead> <tbody> <tr> <th>X-Coord: </th> <td><input id="tileX" type="number" value="0"></td> <th>Scale: </th> <td><input id="scale" type="number" value="1"></td> </tr> <tr> <th>Y-Coord: </th> <td><input id="tileY" type="number" value="0"></td><td>Saved Data</td> <td><button id="toggleData">Import/Export</button></td> </tr> </tbody> </table><table style="height: 100%;display: inline-block;position: absolute;left: 42.5%;width: 20%;"> <thead> <tr> <th colspan="5">Filter (Thresholds)</th> </tr> </thead> <tbody> <tr> <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th> </tr> <tr> <td><input id="t1" type="number" min="40" max="90" style="width:75%;" value="40"></td><td><input id="t2" type="number" min="20" max="60" style="width:75%;" value="20"></td><td><input id="t3" type="number" min="10" max="30" style="width:75%;" value="10"></td><td><input id="t4" type="number" min="5" max="15" style="width:75%;" value="5"></td><td><input id="t5" type="number" min="0" max="5" style="width:75%;" value="0"></td> </tr><tr> <th colspan="2">Type: </th> <td colspan="2"><select id="type"><option value="rock">rock</option><option value="plain">plain</option><option value="lake">lake</option><option value="forest">forest</option><option value="city">city</option><option value="swamp">swamp</option><option value="none">none</option></select></td><td id="matches"></td></tr> </tbody></table><table id="data" style="height: 100%;top: 0px;display: inline-block;position: absolute;right: 2.5%;width: 32.5%;"><thead> <tr> <th colspan="6">Tile Data</th> </tr> </thead> <tbody> <tr> <th>Coords: </th> <td>(388,408)</td> <th>Type: </th> <td>lake</td> <th>Kingdom: </th> <td></td> </tr> <tr> <th>Tier %:</th> <th>T1: 71%</th> <th>T2: 39%</th> <th>T3: ??%</th> <th>T4: ??%</th> <th>T5: ??%</th> </tr> <tr> <th>Monsters:</th> <th>250</th> <th>???</th> <th>???</th> <th>???</th> <th>???</th> </tr> </tbody></table>';
+				newWindow.document.getElementById("saveData").innerHTML = '<div id="export" style=" width: 50%; height: 100%; position: absolute; border-right: 2px solid rgb(180,180,180);"><div style=" text-align: center; font-size: 1.25em; font-weight: 600; width: 100%; height: 20%; background-color: rgb(200,200,200);">Export</div><div style="height: 80%;"><button id="export-button" style="position: relative;top: 50%;left: 50%;transform: translate(-50%,-50%);">Download Map Data</button></div></div><div id="import" style=" width: 50%; height: 100%; position: absolute; right: 0%;"><div style="text-align: center;font-size: 1.25em;font-weight: 600;width: 100%;height: 20%;background-color: rgb(200,200,200);">Import</div><div style=" height: 80%;"> <div style=" width: 50%; position: relative; top: 50%; left: 50%; transform: translate(-50%,-50%);"><input type="file" id="file" style=""><button id="import-button" style="">Import</button></div></div></div><span id="save-close" style="position: absolute;right: 1.25%;cursor: pointer;" >X</span>';
 			}
 			var newMap = newWindow.document.getElementById("newMap");
 			constructSVG(newMap, size);
@@ -163,6 +169,10 @@
 			newWindow.document.getElementById("t4").removeEventListener("change", handleFilter);
 			newWindow.document.getElementById("t5").removeEventListener("change", handleFilter);
 			newWindow.document.getElementById("type").removeEventListener("change", handleFilter);
+			newWindow.document.getElementById("toggleData").removeEventListener("click", toggleSaveData);
+			newWindow.document.getElementById("save-close").removeEventListener("click", toggleSaveData);
+			newWindow.document.getElementById("export-button").removeEventListener("click", downloadMapData);
+			newWindow.document.getElementById("import-button").removeEventListener("click", importMapData);
 			
 			newMap.addEventListener("click", handleClick);
 			newWindow.document.getElementById("tileX").addEventListener("change", handleX);
@@ -174,7 +184,10 @@
 			newWindow.document.getElementById("t4").addEventListener("change", handleFilter);
 			newWindow.document.getElementById("t5").addEventListener("change", handleFilter);
 			newWindow.document.getElementById("type").addEventListener("change", handleFilter);
-			newWindow.document.getElementById("type").addEventListener("change", handleFilter);
+			newWindow.document.getElementById("toggleData").addEventListener("click", toggleSaveData);
+			newWindow.document.getElementById("save-close").addEventListener("click", toggleSaveData);
+			newWindow.document.getElementById("export-button").addEventListener("click", downloadMapData);
+			newWindow.document.getElementById("import-button").addEventListener("click", importMapData);
 			
 			function handleClick(e){
 				if(e.toElement != newMap && e.target.attributes.name !== undefined){
@@ -251,11 +264,70 @@
 				}
 				newWindow.document.getElementById("matches").innerHTML = matches.length;
 				console.log(matches);
-				
 			}
 			
-			function getMapData(){
+			function toggleSaveData(e){
+				var panel = newWindow.document.getElementById("saveData");
+				if(panel.style.display == "none"){
+					panel.style.display = "block";
+				}
+				else{
+					panel.style.display = "none";
+				}
+				e.stopImmediatePropagation();
+			}
+			
+			function downloadMapData(e){
 				var f = createFile();
+				var temp = document.createElement("a");
+				temp.download = "Exported Map Data";
+				temp.href = f;
+				temp.click();
+				e.stopImmediatePropagation();
+			}
+			
+			function importMapData(e){
+				var file = newWindow.document.getElementById("file").files[0];
+				//console.log(file);
+				if(file !== undefined && file.type == "text/plain"){	
+					var reader = new FileReader();
+					reader.onload = function(){
+						
+						var data = reader.result;
+						//console.log(data);
+						if(data !== "" && data.length%4 === 0){
+							data = atob(data);
+							try{
+								data = JSON.parse(data);
+							}
+							catch(err){
+								alert("Selected file is not JSON!")
+								return e;
+							}
+							
+							for(var t in data){
+								if(map[t] !== undefined){
+									Object.assign(map[t], data[t]);
+								}
+								else{
+									map[t] = data[t];
+								}
+							}
+							console.log('%cImport Successful!', 'color: lime;');
+							alert('Import Successful!');
+							save();
+							constructSVG(newMap, size);
+						}
+						else{
+							alert("You can't import a blank text file, or a text file that is not in base64!");
+						}
+					}
+					reader.readAsText(file);
+				}
+				else{
+					alert("You must select a text file!");
+				}
+				e.stopImmediatePropagation();
 			}
 	}
 	function display() {
