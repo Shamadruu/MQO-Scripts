@@ -10,11 +10,27 @@ var logs = {
 $("#ContentLoad > div:not(:first-child) > div > div:nth-child(2) > div:not(:first-child)").each(function(){
 
 	var logData = $(this).text().trim().replace(/-   /g, "-").split(/\ {2,}/); 
-	
 	logData.forEach(function(item,index,array){ 
 		item = item.replace(/ /g, "").trim();
 		
-		if(!isNaN(item)){ item = Number(item);}
+		var x = item.match(/\d+\.?\d*(\w)/);
+		if(x !== null && isNaN(item)){ 
+			x = x[1]
+			item = item.trim().slice(0,-1);
+			if(x == "k"){
+				item *= 1000;
+			}
+			else if(x == "m"){
+				item *= 1000000;
+			}
+			else if(x == "b"){
+				item *= 1000000000 
+			}
+		
+		};
+		
+		if(!isNaN(item)){ item = Math.round(Number(item)) }
+
 		array[index] = item;
 	});
 	
