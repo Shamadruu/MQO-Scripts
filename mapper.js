@@ -12,11 +12,6 @@
   You will need to have popups enabled for MQO for this to work.
  
   This is still a work in progress.
-  
-  **********
-  CHANGELOG
-  **********
-  5/24/2016: First version; fixed coordinate system (Who uses an axial system, anyway?).
 */
 
 (function(){
@@ -28,6 +23,10 @@
 	}
 	if(localStorage.getItem("data")){
 		map = load();
+		for(var t in map){
+			if(!map[t].centerX) delete map[t].centerX;
+			if(!map[t].centerY) delete map[t].centerY;
+		}
 	}
 	if(document.getElementById("mapper")){
 		document.getElementById("mapper").remove();
@@ -90,15 +89,12 @@
 			
 			var coords = $(this).attr("id").replace(/x(?=\d+)|y(?=\d+)/g, " ").trim().split(" ");
 			tile.x = ~~coords[0];
-			tile.y = ~~coords[1];
-			tile.centerX = tile.x+tile.y/2;
-			tile.centerY = tile.y;
-			
-			
+			tile.y = ~~coords[1];	
 			
 			tile.type = $(this).attr("class").replace(/tile-(?=\w+)| Kg[0-9]/g,"");
 			tile.kingdom = $(this).attr("class").match(/Kg[0-9]/)||'';
 			var text = $(this).text().replace(/(Tier(?= )[12345])/g, "$1 ");
+			/*
 			if(!map[id].monsters){
 				map[id].monsters = [];
 			};
@@ -122,38 +118,57 @@
 			else if(text.search(/\d+,\d+/) === -1 && text !== ""){
 				tile.monsters = uconcat(tile.monsters.concat(text.replace(/ +/g, "").split(",")));
 			}
+			*/
 			Object.assign(map[id], tile);
 		});
 		save();
 	}
 	function constructSVG(svg,s){
-		svg.innerHTML = '<g></g>';
 		var m = load();
-		var group = svg.getElementsByTagName('g')[0];
-		var g = ''; 
+		var group = svg.getElementById('main-group');
+		var frag = newWindow.document.createDocumentFragment();
+		var time = new Date().getTime();
+		
 		for(var t in m){
 			var tile = m[t];
-			tile.points = '';
-			tile.points += [((tile.centerX + 1)*s*2), (((tile.centerY+1)*3*s/2)-s)].join(",");
-			tile.points += ' ' + [(((tile.centerX + 1)*s*2)+s), (((tile.centerY+1)*3*s/2)-s/2)].join(",");
-			tile.points += ' ' + [(((tile.centerX + 1)*s*2)+s), (((tile.centerY+1)*3*s/2)+s/2)].join(",");
-			tile.points += ' ' + [((tile.centerX + 1)*s*2), (((tile.centerY+1)*3*s/2)+s)].join(",");
-			tile.points += ' ' + [(((tile.centerX + 1)*s*2)-s), (((tile.centerY+1)*3*s/2)+s/2)].join(",");
-			tile.points += ' ' + [(((tile.centerX + 1)*s*2)-s), (((tile.centerY+1)*3*s/2)-s/2)].join(",");
+			var tileSVG = svg.getElementById(t)
+			//Add new tiles
+			if(!tileSVG){
+				tileSVG = document.createElementNS("http://www.w3.org/2000/svg", "g");
+				var centerX = tile.x+tile.y/2;
+				var centerY = tile.y;
+				var points = [((centerX + 1)*s*2), (((centerY+1)*3*s/2)-s)].join(",") + ' ' +  [(((centerX + 1)*s*2)+s), (((centerY+1)*3*s/2)-s/2)].join(",") + ' ' + [(((centerX + 1)*s*2)+s), (((centerY+1)*3*s/2)+s/2)].join(",") + ' ' + [((centerX + 1)*s*2), (((centerY+1)*3*s/2)+s)].join(",") + ' ' + [(((centerX + 1)*s*2)-s), (((centerY+1)*3*s/2)+s/2)].join(",") + ' ' + [(((centerX + 1)*s*2)-s), (((centerY+1)*3*s/2)-s/2)].join(",");;
+				
+				tileSVG.id = t;
+				tileSVG.name = t;
+				tileSVG.classList.add(tile.type);
+				if(tile.kingdom){
+					tileSVG.classList.add(tile.kingdom);
+				}
+				tileSVG.innerHTML = '<polygon name="' + t + '" points="' + points +'"></polygon><text><tspan name="' + t + '" x="' + ((centerX+1)*s*2) + '" y="' + ((centerY+1)*3*s/2) + '">'  + tile.x + ',' + tile.y +  '</tspan><tspan name="' + t + '" x="' + ((centerX+1)*s*2) + '" y="' + (s/3+(centerY+1)*3*s/2) + '">' + (tile.t1||"??") + '|' + (tile.t2||"??") +'|' +(tile.t3||"??") +'|' + (tile.t4||"??") +'|' + (tile.t5||"?") + '</tspan>';
+				frag.appendChild(tileSVG);
+			}
+			//Update old tiles
+			
+			else{
+				tileSVG.getElementsByTagName("tspan")[1].innerHTML = ''+(tile.t1||"??") + '|' + (tile.t2||"??") +'|' +(tile.t3||"??") +'|' + (tile.t4||"??") +'|' + (tile.t5||"?")+'';
+			}
+			
+		}		
+		//Add new tiles
+		group.appendChild(frag);
 		
-			g +='<g id="' + t + '" name="' + t + '" class="' + tile.type + ' ' + tile.kingdom + '"><polygon name="' + t + '" points="' + tile.points +'"></polygon><text><tspan name="' + t + '" x="' + ((tile.centerX+1)*s*2) + '" y="' + ((tile.centerY+1)*3*s/2) + '">'  + tile.x + ',' + tile.y +  '</tspan><tspan name="' + t + '" x="' + ((tile.centerX+1)*s*2) + '" y="' + (s/3+(tile.centerY+1)*3*s/2) + '">' + (tile.t1||"??") + '|' + (tile.t2||"??") +'|' +(tile.t3||"??") +'|' + (tile.t4||"??") +'|' + (tile.t5||"?") + '</tspan></g>';
-		}
-		group.innerHTML = g;
+		console.log(new Date().getTime() - time);
 	}
 	function constructWindow(){
 		var size = 10;
 		var scale = 1;
 		var head = newWindow.document.getElementsByTagName("head")[0];
-			head.innerHTML = "<style>body { background: #666666; margin:0;} #newMap { width: 100%; height: 90%; vertical-align:bottom; background-color: #666666;} #navbar { width: 100%; height: 10%; background-color: white;vertical-align: top; position:relative;} #saveData {position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 75%; height: 12.5%; z-index: 10; background-color: rgb(230,230,230);} polygon {stroke: hsl(0, 0%, 70%); stroke-width: 0.01%;} g > text {text-anchor:middle;font-size: 5.5px; font-stretch: extra-condensed;} g > text > tspan:nth-of-type(2){ font-size: 0.65em;} .plain polygon{fill: hsl(72, 87%, 71%);} .city polygon{fill: hsl(43, 26%, 46%);} .lake polygon{fill:hsl(231, 91%, 62%);} .forest polygon{fill:hsl(108, 26%, 32%);} .swamp polygon{fill:hsl(72, 8%, 31%);} .rock polygon{fill: hsl(172, 4%, 46%);} .Kg1 polygon, .Kg2 polygon {stroke: hsl(348, 83%, 47%) !important; stroke-width: 0.05% !important;}}";
+			head.innerHTML = "<title>Miden Quest Online Map</title><style>body { background: #666666; margin:0;} #newMap { width: 100%; height: 90%; vertical-align:bottom; background-color: #666666;} #navbar { width: 100%; height: 10%; background-color: white;vertical-align: top; position:relative;} #saveData {position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 75%; height: 12.5%; z-index: 10; background-color: rgb(230,230,230);} polygon {stroke: hsl(0, 0%, 70%); stroke-width: 0.01%;} g > text {text-anchor:middle;font-size: 5.5px; font-stretch: extra-condensed;} g > text > tspan:nth-of-type(2){ font-size: 0.65em;} .plain polygon{fill: hsl(72, 87%, 71%);} .city polygon{fill: hsl(43, 26%, 46%);} .lake polygon{fill:hsl(231, 91%, 62%);} .forest polygon{fill:hsl(108, 26%, 32%);} .swamp polygon{fill:hsl(72, 8%, 31%);} .rock polygon{fill: hsl(172, 4%, 46%);} .Kg1 polygon, .Kg2 polygon {stroke: hsl(348, 83%, 47%) !important; stroke-width: 0.05% !important;}}";
 			
 			//If the navbar does not exist, assume that this is an entirely new window.
 			if(!newWindow.document.getElementById("navbar")){
-				newWindow.document.getElementsByTagName("body")[0].innerHTML = '<div id="navbar"></div><div id="saveData" style="display:none;"></div><div style="position: relative; z-index:-1;"><svg id="newMap"></svg></div>';
+				newWindow.document.getElementsByTagName("body")[0].innerHTML = '<div id="navbar"></div><div id="saveData" style="display:none;"></div><div style="position: relative; z-index:-1;"><svg id="newMap"><g id="main-group"></g></svg></div>';
 				newWindow.document.getElementById("navbar").innerHTML = '<table style="height: 100%;display: inline-block;position: absolute;left: 2.5%;width: 40%;"> <thead> <tr> <th colspan="2">Target Tile</th> <th colspan="2">Scale</th> </tr> </thead> <tbody> <tr> <th>X-Coord: </th> <td><input id="tileX" type="number" value="0"></td> <th>Scale: </th> <td><input id="scale" type="number" value="1"></td> </tr> <tr> <th>Y-Coord: </th> <td><input id="tileY" type="number" value="0"></td><td>Saved Data</td> <td><button id="toggleData">Import/Export</button></td> </tr> </tbody> </table><table style="height: 100%;display: inline-block;position: absolute;left: 42.5%;width: 20%;"> <thead> <tr> <th colspan="5">Filter (Thresholds)</th> </tr> </thead> <tbody> <tr> <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th> </tr> <tr> <td><input id="t1" type="number" min="40" max="90" style="width:75%;" value="40"></td><td><input id="t2" type="number" min="20" max="60" style="width:75%;" value="20"></td><td><input id="t3" type="number" min="10" max="30" style="width:75%;" value="10"></td><td><input id="t4" type="number" min="5" max="15" style="width:75%;" value="5"></td><td><input id="t5" type="number" min="0" max="5" style="width:75%;" value="0"></td> </tr><tr> <th colspan="2">Type: </th> <td colspan="2"><select id="type"><option value="rock">rock</option><option value="plain">plain</option><option value="lake">lake</option><option value="forest">forest</option><option value="city">city</option><option value="swamp">swamp</option><option value="none">none</option></select></td><td id="matches"></td></tr> </tbody></table><table id="data" style="height: 100%;top: 0px;display: inline-block;position: absolute;right: 2.5%;width: 32.5%;"><thead> <tr> <th colspan="6">Tile Data</th> </tr> </thead> <tbody> <tr> <th>Coords: </th> <td>(388,408)</td> <th>Type: </th> <td>lake</td> <th>Kingdom: </th> <td></td> </tr> <tr> <th>Tier %:</th> <th>T1: 71%</th> <th>T2: 39%</th> <th>T3: ??%</th> <th>T4: ??%</th> <th>T5: ??%</th> </tr> <tr> <th>Monsters:</th> <th>250</th> <th>???</th> <th>???</th> <th>???</th> <th>???</th> </tr> </tbody></table>';
 				newWindow.document.getElementById("saveData").innerHTML = '<div id="export" style=" width: 50%; height: 100%; position: absolute; border-right: 2px solid rgb(180,180,180);"><div style=" text-align: center; font-size: 1.25em; font-weight: 600; width: 100%; height: 20%; background-color: rgb(200,200,200);">Export</div><div style="height: 80%;"><button id="export-button" style="position: relative;top: 50%;left: 50%;transform: translate(-50%,-50%);">Download Map Data</button></div></div><div id="import" style=" width: 50%; height: 100%; position: absolute; right: 0%;"><div style="text-align: center;font-size: 1.25em;font-weight: 600;width: 100%;height: 20%;background-color: rgb(200,200,200);">Import</div><div style=" height: 80%;"> <div style=" width: 50%; position: relative; top: 50%; left: 50%; transform: translate(-50%,-50%);"><input type="file" id="file" style=""><button id="import-button" style="">Import</button></div></div></div><span id="save-close" style="position: absolute;right: 1.25%;cursor: pointer;" >X</span>';
 			}
@@ -342,4 +357,3 @@
 		}
 	}
 })();
-
