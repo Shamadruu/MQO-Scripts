@@ -24,8 +24,9 @@
 	if(localStorage.getItem("data")){
 		map = load();
 		for(var t in map){
-			if(!map[t].centerX) delete map[t].centerX;
-			if(!map[t].centerY) delete map[t].centerY;
+			if(map[t].centerX) delete map[t].centerX;
+			if(map[t].centerY) delete map[t].centerY;
+			if(map[t].points) delete map[t].points;
 		}
 	}
 	if(document.getElementById("mapper")){
@@ -155,6 +156,9 @@
 			}
 			
 		}		
+		
+		console.log(new Date().getTime() - time);
+		
 		//Add new tiles
 		group.appendChild(frag);
 		
