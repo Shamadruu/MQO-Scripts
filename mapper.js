@@ -28,6 +28,7 @@
 			if(map[t].centerY) delete map[t].centerY;
 			if(map[t].points) delete map[t].points;
 		}
+		save();
 	}
 	if(document.getElementById("mapper")){
 		document.getElementById("mapper").remove();
