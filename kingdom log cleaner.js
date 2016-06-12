@@ -1,4 +1,4 @@
-var t = $.now();
+var t = new Date().getTime();
 Number.prototype.format = function(){
    return this.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 };
@@ -7,9 +7,8 @@ var logs = {
 	total : {name: "Total", rank: "", gold: 0, gems: 0, t1:0,t2:0,t3:0,t4:0,t5:0}
 };
 
-$("#ContentLoad > div:not(:first-child) > div > div:nth-child(2) > div:not(:first-child)").each(function(){
-
-	var logData = $(this).text().trim().replace(/-   /g, "-").split(/\ {2,}/); 
+document.querySelectorAll("#ContentLoad > div:not(:first-child) > div > div:nth-child(2) > div:not(:first-child)").forEach(function(e){
+	var logData = e.textContent.trim().replace(/-   /g, "-").split(/\ {2,}/); 
 	logData.forEach(function(item,index,array){ 
 		item = item.replace(/ /g, "").trim();
 		
@@ -64,15 +63,18 @@ $("#ContentLoad > div:not(:first-child) > div > div:nth-child(2) > div:not(:firs
 	logs.total.t4 += entry.t4;
 	logs.total.t5 += entry.t5;
 
+	
 });
 
-$("#ContentLoad > div:not(:first-child) > div > div:nth-child(2) > div:not(:first-child)").empty();
+document.querySelectorAll("#ContentLoad > div:not(:first-child) > div > div:nth-child(2) > div:not(:first-child)").forEach(function(e){
+	e.innerHTML = "";
+});
 
 for(var e in logs){
 	var ent = logs[e];
 	var div = document.createElement("div");
 	
-	$(div).append('<div style="display:inline-block; width:80px; text-align:right; font-size:9pt;">' + ent.name + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt;">' + ent.rank + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt; margin-left: 5px;">' + ent.gold.format() + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt; margin-left: 5px;">' + ent.gems.format() + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt; margin-left: 5px;">' + ent.t1.format() + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt; margin-left: 5px;">' + ent.t2.format() + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt; margin-left: 5px;">' + ent.t3.format() + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt; margin-left: 5px;">' + ent.t4.format() + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt; margin-left: 5px;">' + ent.t5.format() + '</div>');
-	$("#ContentLoad > div:not(:first-child) > div > div:nth-child(2) > div:not(:first-child)").eq(0).append(div);
+	div.innerHTML += ('<div style="display:inline-block; width:80px; text-align:right; font-size:9pt;">' + ent.name + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt;">' + ent.rank + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt; margin-left: 5px;">' + ent.gold.format() + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt; margin-left: 5px;">' + ent.gems.format() + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt; margin-left: 5px;">' + ent.t1.format() + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt; margin-left: 5px;">' + ent.t2.format() + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt; margin-left: 5px;">' + ent.t3.format() + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt; margin-left: 5px;">' + ent.t4.format() + '</div><div style="display:inline-block; width:55px; text-align:right; font-size:9pt; margin-left: 5px;">' + ent.t5.format() + '</div>');
+	document.querySelector("#ContentLoad > div:not(:first-child) > div > div:nth-child(2) > div:not(:first-child)").appendChild(div);
 }
-console.log($.now() - t);
+console.log(new Date().getTime() - t);
