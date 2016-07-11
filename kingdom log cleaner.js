@@ -7,7 +7,7 @@ var logs = {
 	total : {name: "Total", rank: "", gold: 0, gems: 0, t1:0,t2:0,t3:0,t4:0,t5:0}
 };
 
-document.querySelectorAll("#ContentLoad > div:not(:first-child) > div > div:nth-child(2) > div:not(:first-child)").forEach(function(e){
+document.querySelectorAll("#ContentLoad > div:not(:first-child) > div > div:nth-child(2) > div:nth-child(even)").forEach(function(e){
 	var logData = e.textContent.trim().replace(/-   /g, "-").split(/\ {2,}/); 
 	logData.forEach(function(item,index,array){ 
 		item = item.replace(/ /g, "").trim();
