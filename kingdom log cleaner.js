@@ -62,8 +62,6 @@ document.querySelectorAll("#ContentLoad > div:not(:first-child) > div > div:nth-
 	logs.total.t3 += entry.t3;
 	logs.total.t4 += entry.t4;
 	logs.total.t5 += entry.t5;
-
-	
 });
 
 document.querySelectorAll("#ContentLoad > div:not(:first-child) > div > div:nth-child(2) > div:not(:first-child)").forEach(function(e){
